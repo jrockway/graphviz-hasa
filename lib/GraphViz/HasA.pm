@@ -49,8 +49,8 @@ sub add_class {
     $class = do { Class::MOP::load_class($class); Class::MOP::class_of($class) }
         if !ref $class;
 
-    return unless defined $class; # non-moose class
     return if $self->already_seen($class);
+    return unless defined $class; # non-moose class
     $self->mark_seen($class);
 
     my $name = $class->name;
@@ -69,14 +69,17 @@ sub graph {
     $viz ||= GraphViz->new;
 
     for my $class ($self->seen_classes) {
-        $viz->add_node($class->name);
+        $viz->add_node(
+            $class->name,
+            shape => $class->isa('Moose::Meta::Class') ? 'box' : 'ellipse',
+        );
     }
 
     for my $edge ($self->edges) {
         $viz->add_edge(
             $edge->{from} => $edge->{to},
             label => $edge->{via},
-            style => $edge->{weak_ref} ? 'dashed' : 'normal',
+            style => $edge->{weak_ref} ? 'dashed' : 'solid',
         );
     }
 
