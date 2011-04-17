@@ -11,7 +11,10 @@ use Set::Object qw(set);
 has 'introspector' => (
     is      => 'ro',
     isa     => 'GraphViz::HasA::Introspect',
-    default => sub { GraphViz::HasA::Introspect->new },
+    default => sub {
+        require GraphViz::HasA::Introspect;
+        GraphViz::HasA::Introspect->new;
+    },
     handles => [qw/find_links_from/],
 );
 
@@ -40,9 +43,13 @@ has 'seen' => (
 
 sub add_class {
     my ($self, $class) = @_;
+
+    confess 'need class' unless $class;
+
     $class = do { Class::MOP::load_class($class); Class::MOP::class_of($class) }
         if !ref $class;
 
+    return unless defined $class; # non-moose class
     return if $self->already_seen($class);
     $self->mark_seen($class);
 
