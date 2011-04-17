@@ -71,7 +71,7 @@ sub graph {
     for my $class ($self->seen_classes) {
         $viz->add_node(
             $class->name,
-            shape => $class->isa('Moose::Meta::Class') ? 'box' : 'ellipse',
+            shape => $class->isa('Moose::Meta::Role') ? 'ellipse' : 'box',
         );
     }
 
