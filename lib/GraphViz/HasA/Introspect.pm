@@ -30,6 +30,11 @@ sub extract_classnames_from_type {
             $_[0]->visit($_->type_constraints);
             return $_;
         },
+        'Moose::Meta::TypeConstraint' => sub {
+            if($_->has_parent) {
+                $_[0]->visit($_->parent);
+            }
+        }
     );
     $v->visit($type);
     return @result;
