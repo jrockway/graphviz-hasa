@@ -15,3 +15,8 @@ and the dot markup will be printed to stdout:
 This is how I generated the example:
 
 ![example!](https://github.com/jrockway/graphviz-hasa/raw/master/example.png)
+
+Because pictures are fun, here's what Bread::Board::Container looks
+like:
+
+![example2!](https://github.com/jrockway/graphviz-hasa/raw/master/example2.png)
