@@ -4,6 +4,7 @@ use Moose;
 use true;
 use namespace::autoclean;
 
+use Class::MOP;
 use GraphViz;
 use MooseX::Types::Set::Object;
 use Set::Object qw(set);
@@ -34,7 +35,8 @@ has 'seen' => (
     isa           => 'Set::Object',
     default       => sub { set },
     coerce        => 1,
-    documentation => 'type:Class::MOP::Class|Moose::Meta::Role',
+    # this is how you add edges without type constraints
+    documentation => 'type:Class::MOP::Module type:Moose::Meta::Role',
     handles       => {
         already_seen => 'member',
         mark_seen    => 'insert',
