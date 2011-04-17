@@ -1,4 +1,7 @@
 #!/usr/bin/env perl
+package main;
+# PODNAME: visualize-objects.pl
+# ABSTRACT: script to invoke L<GraphViz::HasA::App>
 
 use strict;
 use warnings;
@@ -12,9 +15,6 @@ use lib ".";
 use lib "lib";
 
 use MooseX::Runnable::Run 'GraphViz::HasA::App';
-
-# PODNAME: visualize-objects.pl
-# ABSTRACT: script to invoke L<GraphViz::HasA::App>
 
 __END__
 
