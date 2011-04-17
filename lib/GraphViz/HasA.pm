@@ -34,7 +34,7 @@ has 'seen' => (
     isa           => 'Set::Object',
     default       => sub { set },
     coerce        => 1,
-    documentation => 'type:Moose::Meta::Class|Moose::Meta::Role',
+    documentation => 'type:Class::MOP::Class|Moose::Meta::Role',
     handles       => {
         already_seen => 'member',
         mark_seen    => 'insert',
@@ -44,14 +44,15 @@ has 'seen' => (
 
 sub add_class {
     my ($self, $class) = @_;
-
     confess 'need class' unless $class;
 
-    $class = do { Class::MOP::load_class($class); Class::MOP::class_of($class) }
-        if !ref $class;
+    $class = do {
+        Class::MOP::load_class($class);
+        Class::MOP::class_of($class) || Class::MOP::Class->initialize($class);
+    } if !blessed $class;
 
+    return unless defined $class; # should not happen
     return if $self->already_seen($class);
-    return unless defined $class; # non-moose class
     $self->mark_seen($class);
 
     my $name = $class->name;
