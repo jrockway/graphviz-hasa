@@ -4,6 +4,8 @@ use Moose;
 use true;
 use namespace::autoclean;
 use feature qw(switch);
+
+use Moose::Util::TypeConstraints ();
 use Data::Visitor::Callback;
 
 sub extract_classnames_from_type {
@@ -32,7 +34,7 @@ sub extract_classnames_from_type {
     return @result;
 }
 
-sub find_links_from {
+sub find_links_from_class {
     my ($self, $class) = @_;
 
     my @links;
@@ -53,7 +55,6 @@ sub find_links_from {
                        $attr->has_default ||
                        $attr->has_builder;
 
-
             my @classnames = $self->extract_classnames_from_type($type);
             for my $cname (@classnames) {
                 push @links, [ $name => { %result, to => $cname } ];
@@ -62,6 +63,45 @@ sub find_links_from {
     }
 
     return @links;
+}
+
+sub find_links_from_role {
+    my ($self, $role) = @_;
+
+    my @links;
+
+    my @attrs = map { $_->get_attribute_list } $role->calculate_all_roles;
+  attr: for my $name (sort { $a->name cmp $b->name } @attrs) {
+        my $attr = $role->get_attribute($name);
+
+        next attr unless exists $attr->{isa};
+
+        my $type = Moose::Util::TypeConstraints::find_or_create_isa_type_constraint($attr->{isa});
+        next attr unless $type;
+
+        my %result;
+        $result{weak_ref} = 1 if $attr->{weak_ref};
+        $result{optional} = 1
+            unless $attr->{required}   ||
+                   $attr->{default}    ||
+                   $attr->{builder}    ||
+                   $attr->{lazy_build};
+
+        my @classnames = $self->extract_classnames_from_type($type);
+        for my $cname (@classnames) {
+            push @links, [ $name => { %result, to => $cname } ];
+        }
+    }
+
+    return @links;
+}
+
+
+sub find_links_from {
+    my ($self, $it) = @_;
+    return $self->find_links_from_class($it) if $it->isa('Moose::Meta::Class');
+    return $self->find_links_from_role($it)  if $it->isa('Moose::Meta::Role');
+    return;
 }
 
 __PACKAGE__->meta->make_immutable;
