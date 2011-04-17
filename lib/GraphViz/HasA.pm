@@ -31,10 +31,11 @@ has 'edges' => (
 );
 
 has 'seen' => (
-    is      => 'ro',
-    isa     => 'Set::Object',
-    default => sub { set },
-    handles => {
+    isa           => 'Set::Object',
+    default       => sub { set },
+    coerce        => 1,
+    documentation => 'type:Moose::Meta::Class|Moose::Meta::Role',
+    handles       => {
         already_seen => 'member',
         mark_seen    => 'insert',
         seen_classes => 'members',
