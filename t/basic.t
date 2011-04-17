@@ -41,7 +41,7 @@ use Test::More;
   package User;
   use Moose;
 
-  with 'LibraryAdministrator';
+  eval q{with 'LibraryAdministrator'}; # to confuse Dist::Zilla
 
   has 'username' => (
       is  => 'ro',
