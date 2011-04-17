@@ -5,8 +5,9 @@ use true;
 use namespace::autoclean;
 use feature qw(switch);
 
-use Moose::Util::TypeConstraints ();
 use Data::Visitor::Callback;
+use List::MoreUtils qw(uniq);
+use Moose::Util::TypeConstraints ();
 
 sub extract_classnames_from_type {
     my ($self, $type) = @_;
@@ -70,8 +71,8 @@ sub find_links_from_role {
 
     my @links;
 
-    my @attrs = map { $_->get_attribute_list } $role->calculate_all_roles;
-  attr: for my $name (sort { $a->name cmp $b->name } @attrs) {
+    my @attrs = uniq map { $_->get_attribute_list } $role->calculate_all_roles;
+  attr: for my $name (sort { $a cmp $b } @attrs) {
         my $attr = $role->get_attribute($name);
 
         next attr unless exists $attr->{isa};
