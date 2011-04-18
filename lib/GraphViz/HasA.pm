@@ -1,7 +1,6 @@
 package GraphViz::HasA;
 # ABSTRACT: visualize object graphs with GraphViz
 use Moose;
-use true;
 use namespace::autoclean;
 
 use Class::MOP;
@@ -93,3 +92,5 @@ sub graph {
 }
 
 __PACKAGE__->meta->make_immutable;
+
+1;

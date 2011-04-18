@@ -1,7 +1,6 @@
 package GraphViz::HasA::Introspect;
 # ABSTRACT: introspector that knows how to introspect Moose classes
 use Moose;
-use true;
 use namespace::autoclean;
 use feature qw(switch);
 
@@ -152,3 +151,5 @@ sub find_links_from {
 }
 
 __PACKAGE__->meta->make_immutable;
+
+1;
