@@ -76,7 +76,7 @@ sub graph {
         $viz->add_node(
             $class->name,
             shape => $class->isa('Moose::Meta::Role') ? 'ellipse' : 'box',
-            fontsize => 12,
+            fontsize => 14,
         );
     }
 
