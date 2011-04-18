@@ -20,3 +20,12 @@ Because pictures are fun, here's what Bread::Board::Container looks
 like:
 
 ![example2!](https://github.com/jrockway/graphviz-hasa/raw/master/example2.png)
+
+Finally, you can write your own introspectors and use those to produce
+the graphs.  Here, we use `GraphViz::HasA::Introspect::IsA` to get isa
+and does relationships along with the has a graph:
+
+![example3!](https://github.com/jrockway/graphviz-hasa/raw/master/example3.png)
+
+This lets you see that all those parent links come from
+Bread::Board::Traversible, which everything `DOES`.
