@@ -1,11 +1,10 @@
 #!/usr/bin/env perl
 package main;
-# PODNAME: visualize-objects.pl
+# PODNAME: visualize-objects
 # ABSTRACT: script to invoke L<GraphViz::HasA::App>
 
 use strict;
 use warnings;
-use feature ':5.10';
 
 use FindBin qw($Bin);
 use lib "$Bin/../lib";
@@ -20,7 +19,7 @@ __END__
 
 =head1 SYNOPSIS
 
-   $ visualize-objects.pl Foo Bar
+   $ visualize-objects Foo Bar | xdot -
    <the object graph displays on your screen>
 
 =head1 DESCRIPTION
