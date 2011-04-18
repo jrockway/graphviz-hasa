@@ -4,7 +4,24 @@ use Moose;
 use true;
 use namespace::autoclean;
 
+use List::MoreUtils qw(uniq);
+
 extends 'GraphViz::HasA::Introspect::Shallow';
+
+sub resolve_roles {
+    my @result;
+    for my $role (@_) {
+        $role = $role->meta unless blessed $role;
+        if($role->isa('Moose::Meta::Role::Composite')){
+            # really?  there's no attribute for this?
+            push @result, resolve_roles(split /\|/, $role->name);
+        }
+        else {
+            push @result, $role;
+        }
+    }
+    return uniq @result;
+}
 
 around find_links_from_class => sub {
     my ($orig, $self, $class) = @_;
@@ -15,10 +32,11 @@ around find_links_from_class => sub {
     return (
         @links,
         ( map { [ $name => { to => $_->name, via => 'DOES' } ] }
-              $class->calculate_all_roles ),
+              resolve_roles(@{$class->roles}) ),
+
         ( map { [ $name => { to => $_, via => 'ISA' } ] }
               # skip Moose::Object though, because everything is one
-              grep { $_ ne 'Moose::Object' } $class->superclasses ),
+              grep { $_ ne 'Moose::Object' } uniq $class->superclasses ),
     );
 };
 
@@ -31,7 +49,8 @@ around find_links_from_role => sub {
     return (
         @links,
         ( map { [ $name => { to => $_->name, via => 'DOES' } ] }
-              grep { $_->name ne $name } $role->calculate_all_roles ),
+              grep { $_->name ne $name }
+                  resolve_roles(@{$role->get_roles}) ),
     );
 };
 
