@@ -2,7 +2,7 @@ package GraphViz::HasA::Introspect::IsA;
 # ABSTRACT: show Isa (and Does) relationships along with the HasA relationships
 use Moose;
 use true;
-use namespace::autoclean;
+use namespace::autoclean -also => [qw/resolve_roles/];
 
 use List::MoreUtils qw(uniq);
 
