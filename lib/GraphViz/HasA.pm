@@ -76,6 +76,7 @@ sub graph {
         $viz->add_node(
             $class->name,
             shape => $class->isa('Moose::Meta::Role') ? 'ellipse' : 'box',
+            fontsize => 12,
         );
     }
 
@@ -84,6 +85,7 @@ sub graph {
             $edge->{from} => $edge->{to},
             label => $edge->{via},
             style => $edge->{weak_ref} ? 'dashed' : 'solid',
+            fontsize => 9,
         );
     }
 
