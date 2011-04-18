@@ -6,6 +6,13 @@ use GraphViz::HasA;
 
 with 'MooseX::Runnable', 'MooseX::Getopt::Dashes';
 
+has 'introspector' => (
+    is            => 'ro',
+    isa           => 'Str',
+    default       => 'GraphViz::HasA::Introspect',
+    documentation => 'class to use for building the edge list; default is quite sane',
+);
+
 has 'has_a' => (
     traits     => ['NoGetopt'],
     is         => 'ro',
@@ -15,7 +22,12 @@ has 'has_a' => (
 );
 
 sub _build_has_a {
-    return GraphViz::HasA->new;
+    my $self = shift;
+
+    my $introspector = $self->introspector;
+    Class::MOP::load_class($introspector);
+
+    return GraphViz::HasA->new( introspector => $introspector->new );
 }
 
 sub run {
